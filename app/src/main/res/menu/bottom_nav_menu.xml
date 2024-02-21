@@ -17,7 +17,7 @@
         android:id="@+id/navUpload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Profile"
+        android:title="New Upload"
         android:icon="@drawable/baseline_add_24"/>
     <item
         android:id="@+id/navNotifications"

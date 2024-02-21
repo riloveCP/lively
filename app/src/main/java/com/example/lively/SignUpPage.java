@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class SignUpPage extends AppCompatActivity {
-    TextInputEditText fullName, userName, email, pswrd;
+    EditText fullNameInput, userNameInput, emailInput, passwordInput;
     Button signUp;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -49,10 +50,10 @@ public class SignUpPage extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progressBar);
-        fullName = findViewById(R.id.fullName);
-        userName = findViewById(R.id.userName);
-        email = findViewById(R.id.email);
-        pswrd = findViewById(R.id.password);
+        fullNameInput = findViewById(R.id.fullNameInput);
+        userNameInput = findViewById(R.id.userNameInput);
+        emailInput = findViewById(R.id.emailInput);
+        passwordInput = findViewById(R.id.passwordInput);
         signUp = findViewById(R.id.signUp);
         logIn = findViewById(R.id.goToLogin);
 
@@ -69,10 +70,10 @@ public class SignUpPage extends AppCompatActivity {
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
                 String emaiL, password, fullname, username;
-                fullname = String.valueOf(fullName.getText());
-                username = String.valueOf(userName.getText());
-                emaiL = String.valueOf(email.getText());
-                password = String.valueOf(pswrd.getText());
+                fullname = String.valueOf(fullNameInput.getText());
+                username = String.valueOf(userNameInput.getText());
+                emaiL = String.valueOf(emailInput.getText());
+                password = String.valueOf(passwordInput.getText());
 
                 if(TextUtils.isEmpty(fullname) || TextUtils.isEmpty(username) || TextUtils.isEmpty(emaiL) || TextUtils.isEmpty(password)){
                     Toast.makeText(SignUpPage.this,"All fields are required.", Toast.LENGTH_SHORT).show();

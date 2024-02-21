@@ -28,8 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 public class HomeFragment extends Fragment {
 
     public ImageView message;
@@ -46,7 +44,10 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         toolbar = view.findViewById(R.id.homeToolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        }
+        //((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
         message = view.findViewById(R.id.message);
         message.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +68,13 @@ public class HomeFragment extends Fragment {
         postAdapter = new PostAdapter(getContext(), postList);
         recyclerView.setAdapter(postAdapter);
 
-        checkFollowing();
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Intent intent = new Intent(getContext(), LogInScreen.class);
+        } else {
+            checkFollowing();
+        }
 
         return view;
     }

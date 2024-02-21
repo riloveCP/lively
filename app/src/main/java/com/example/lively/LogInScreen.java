@@ -2,7 +2,6 @@ package com.example.lively;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -23,7 +21,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LogInScreen extends AppCompatActivity {
     TextView textView;
-    EditText username, pswrd;
     Button LogIN_btn;
     SharedPreferences sharedPreferences;
     ProgressBar progressBar;
@@ -48,11 +45,11 @@ public class LogInScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in_screen);
 
-        username = findViewById(R.id.username);
-        pswrd = findViewById(R.id.password);
         LogIN_btn = findViewById(R.id.loginButton);
         progressBar = findViewById(R.id.progressBar);
         mAuth = FirebaseAuth.getInstance();
+        EditText usernameInput = findViewById(R.id.usernameInput);
+        EditText passwordInput = findViewById(R.id.passwordInput);
 
         sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 
@@ -68,8 +65,8 @@ public class LogInScreen extends AppCompatActivity {
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
                 String email, password;
-                email = String.valueOf(username.getText());
-                password = String.valueOf(pswrd.getText());
+                email = String.valueOf(usernameInput.getText());
+                password = String.valueOf(passwordInput.getText());
 
                 if(TextUtils.isEmpty(email)){
                     Toast.makeText(LogInScreen.this,"Enter email!", Toast.LENGTH_SHORT).show();
@@ -99,17 +96,17 @@ public class LogInScreen extends AppCompatActivity {
                             }
                         });
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(KEY_NAME, username.getText().toString());
-                editor.apply();
-                Intent intent = new Intent(LogInScreen.this, MainActivity.class);
-                startActivity(intent);
-                Toast.makeText(LogInScreen.this,"LogIn Successfully", Toast.LENGTH_SHORT).show();
-                finish();
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString(KEY_NAME, usernameInput.getText().toString());
+//                editor.apply();
+//                Intent intent = new Intent(LogInScreen.this, MainActivity.class);
+//                startActivity(intent);
+//                Toast.makeText(LogInScreen.this,"LogIn Successfully", Toast.LENGTH_SHORT).show();
+//                finish();
             }
         });
 
-        textView=(TextView)findViewById(R.id.createNew);
+        textView = findViewById(R.id.createNew);
         textView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

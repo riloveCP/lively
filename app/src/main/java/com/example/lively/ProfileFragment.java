@@ -27,7 +27,6 @@ public class ProfileFragment extends Fragment {
     FirebaseAuth auth;
     FirebaseUser user;
     Button logOut;
-    TextView userDetail;
     ImageView menu;
     Toolbar toolbar;
     Context context;
@@ -38,22 +37,15 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         toolbar = view.findViewById(R.id.profileToolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        if ( toolbar != null) {
+            ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        }
 
         auth = FirebaseAuth.getInstance();
         logOut = view.findViewById(R.id.logOut);
-        userDetail = view.findViewById(R.id.userDetail);
         user = auth.getCurrentUser();
         menu = view.findViewById(R.id.profileMenu);
         context = getContext();
-
-        if (user == null) {
-            //intent to land on login screen
-            Intent intent = new Intent(context, LogInScreen.class);
-            startActivity(intent);
-        } else {
-            userDetail.setText(user.getEmail());
-        }
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +53,7 @@ public class ProfileFragment extends Fragment {
                 FirebaseAuth.getInstance().signOut();
                 //intent to land on login screen
                 Intent intent = new Intent(context, LogInScreen.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
         });

@@ -97,7 +97,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         public TextView username;
         public TextView fullname;
-        public CircleImageView imageProfile;
+        public CircularImageView imageProfile;
         public Button btnFollow;
 
         public ViewHolder(@NonNull View itemView) {
