@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "836991351967",
+    "project_id": "lively-fe328",
+    "storage_bucket": "lively-fe328.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836991351967:android:04b1bb621b17a5d10636aa",
+        "android_client_info": {
+          "package_name": "com.example.lively"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrvHH-A_LfpM2UTbtet2vlcKnnsXVxL-o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

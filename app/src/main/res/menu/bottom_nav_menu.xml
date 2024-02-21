@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Home"
+        android:icon="@drawable/home_selector"/>
+    <item
+        android:id="@+id/navSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Search"
+        android:icon="@drawable/search_selector"/>
+    <item
+        android:id="@+id/navUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Profile"
+        android:icon="@drawable/baseline_add_24"/>
+    <item
+        android:id="@+id/navNotifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Notifications"
+        android:icon="@drawable/notification_selector"/>
+    <item
+        android:id="@+id/navProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Profile"
+        android:icon="@drawable/profile_selector"/>
+
+</menu>

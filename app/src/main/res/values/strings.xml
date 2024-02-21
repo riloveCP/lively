@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">lively</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="get_in_your_account">Get in your account!</string>
+    <string name="or">OR</string>
+    <string name="new_user_signup">New user? Signup</string>
+    <string name="forget_password">forget password?</string>
+    <string name="search">Search</string>
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
+
+
+</resources>
