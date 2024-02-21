@@ -22,13 +22,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.yalantis.ucrop.UCrop;
-
 import android.widget.Toast;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.yalantis.ucrop.UCrop;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -56,24 +55,13 @@ public class PostActivity extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference("posts");
 
 
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(PostActivity.this, MainActivity.class));
-                finish();
-            }
+        close.setOnClickListener(v -> {
+            startActivity(new Intent(PostActivity.this, MainActivity.class));
+            finish();
         });
 
-        post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadImage();
-            }
-        });
+        post.setOnClickListener(v -> uploadImage());
 
-//        CropImage.activity()
-//                .setAspectRatio(1,1)
-//                .start(PostActivity.this);
         UCrop.of(Uri.parse(myUrl), imageUri)
                 .withAspectRatio(1, 1)
                 .withMaxResultSize(20, 20)
@@ -117,7 +105,6 @@ public class PostActivity extends AppCompatActivity {
 
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("postid", postId);
-         //               hashMap.put("postimage", imageAdded);
                         hashMap.put("postimage", myUrl);
                         hashMap.put("description", description.getText().toString());
                         hashMap.put("publisher", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
@@ -133,12 +120,7 @@ public class PostActivity extends AppCompatActivity {
                         Toast.makeText(PostActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(PostActivity.this, " " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            }).addOnFailureListener(e -> Toast.makeText(PostActivity.this, " " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(this, "No image selected.", Toast.LENGTH_SHORT).show();
         }
@@ -151,6 +133,7 @@ public class PostActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             assert data != null;
             imageUri = UCrop.getOutput(data);
+            assert imageUri != null;
             myUrl = imageUri.toString();
             imageAdded.setImageURI(imageUri);
 

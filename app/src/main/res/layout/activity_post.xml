@@ -12,7 +12,7 @@
         android:layout_height="56dp"
         android:background="@drawable/bg1">
 
-        <Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/postToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                     android:textSize="16sp" />
 
             </RelativeLayout>
-        </Toolbar>
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -64,6 +64,7 @@
             android:layout_marginTop="15dp"
             android:hint="Description"
             android:maxLines="5"
+            android:textSize="20sp"
             android:id="@+id/description"/>
 
     </LinearLayout>

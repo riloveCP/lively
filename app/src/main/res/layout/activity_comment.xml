@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".CommentActivity">
 
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/commentToolbar"/>
@@ -25,7 +25,7 @@
         android:padding="4dp"
         android:layout_alignParentBottom="true">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/imageProfile"/>

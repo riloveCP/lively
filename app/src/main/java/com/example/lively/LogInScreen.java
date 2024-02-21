@@ -70,11 +70,13 @@ public class LogInScreen extends AppCompatActivity {
 
                 if(TextUtils.isEmpty(email)){
                     Toast.makeText(LogInScreen.this,"Enter email!", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 
                 if(TextUtils.isEmpty(password)){
                     Toast.makeText(LogInScreen.this,"Enter password!", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 

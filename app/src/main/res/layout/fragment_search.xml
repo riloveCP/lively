@@ -9,10 +9,10 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg1">
 
-        <Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/searchToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,17 +34,16 @@
                 android:layout_marginStart="10dp"
                 android:textColorHint="@color/white"
                 android:textSize="20sp"
-                android:hint="@string/search"
-                android:autofillHints="tie dye"
-                android:inputType="textShortMessage" />
-        </Toolbar>
+                android:hint="@string/search"/>
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/bar"
-        android:id="@+id/recyclerView">
-
-    </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>
