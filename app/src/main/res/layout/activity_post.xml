@@ -55,7 +55,7 @@
             android:layout_height="200dp"
             android:scaleType="centerInside"
             android:layout_gravity="center"
-            android:src="@drawable/pineapple"
+
             android:id="@+id/imageAdded"/>
         
         <EditText

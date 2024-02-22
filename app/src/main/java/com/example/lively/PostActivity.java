@@ -9,26 +9,21 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import com.google.firebase.storage.StorageTask;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import android.widget.Toast;
-
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-import com.yalantis.ucrop.UCrop;
-
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -36,12 +31,13 @@ import java.util.UUID;
 public class PostActivity extends AppCompatActivity {
 
     Uri imageUri;
-    String myUrl = "";
+    String myUrl = null;
     StorageTask uploadTask;
     StorageReference storageReference;
     ImageView close, imageAdded;
     TextView post;
     EditText description;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,19 +50,28 @@ public class PostActivity extends AppCompatActivity {
         description = findViewById(R.id.description);
         storageReference = FirebaseStorage.getInstance().getReference("posts");
 
-
         close.setOnClickListener(v -> {
             startActivity(new Intent(PostActivity.this, MainActivity.class));
             finish();
         });
 
-        post.setOnClickListener(v -> uploadImage());
+        imageAdded.setOnClickListener(v -> openFileChooser());
 
-        UCrop.of(Uri.parse(myUrl), imageUri)
-                .withAspectRatio(1, 1)
-                .withMaxResultSize(20, 20)
-                .start(this);
+        post.setOnClickListener(v -> {
+            if (imageUri != null) {
+                uploadImage();
+            } else {
+                Toast.makeText(this, "No image selected.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
     private String getFileExtension(Uri uri) {
@@ -80,68 +85,57 @@ public class PostActivity extends AppCompatActivity {
         progressDialog.setMessage("Posting");
         progressDialog.show();
 
-        if (imageUri != null) {
-            StorageReference fileReference = storageReference.child(UUID.randomUUID().toString() + "." + getFileExtension(imageUri));
-            uploadTask = fileReference.putFile(imageUri);
-            uploadTask.continueWithTask(new Continuation() {
-                @Override
-                public Object then(@NonNull Task task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
+        StorageReference fileReference = storageReference.child(UUID.randomUUID().toString() + "." + getFileExtension(imageUri));
+        uploadTask = fileReference.putFile(imageUri);
 
-                    return fileReference.getDownloadUrl();
+        uploadTask.continueWithTask(new Continuation() {
+            @Override
+            public Object then(@NonNull Task task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
                 }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        myUrl = downloadUri.toString();
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+                return fileReference.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    myUrl = downloadUri.toString();
 
-                        String postId = reference.push().getKey();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
 
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("postid", postId);
-                        hashMap.put("postimage", myUrl);
-                        hashMap.put("description", description.getText().toString());
-                        hashMap.put("publisher", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                    String postId = reference.push().getKey();
 
-                        assert postId != null;
-                        reference.child(postId).setValue(hashMap);
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("postid", postId);
+                    hashMap.put("postimage", myUrl);
+                    hashMap.put("description", description.getText().toString());
+                    hashMap.put("publisher", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
 
-                        progressDialog.dismiss();
+                    assert postId != null;
+                    reference.child(postId).setValue(hashMap);
 
-                        startActivity(new Intent(PostActivity.this, MainActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(PostActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                    }
+                    progressDialog.dismiss();
+
+                    startActivity(new Intent(PostActivity.this, MainActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(PostActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                 }
-            }).addOnFailureListener(e -> Toast.makeText(PostActivity.this, " " + e.getMessage(), Toast.LENGTH_SHORT).show());
-        } else {
-            Toast.makeText(this, "No image selected.", Toast.LENGTH_SHORT).show();
-        }
+            }
+        }).addOnFailureListener(e -> Toast.makeText(PostActivity.this, " " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-            assert data != null;
-            imageUri = UCrop.getOutput(data);
-            assert imageUri != null;
-            myUrl = imageUri.toString();
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            imageUri = data.getData();
             imageAdded.setImageURI(imageUri);
-
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            assert data != null;
-            final Throwable cropError = UCrop.getError(data);
-            startActivity(new Intent(PostActivity.this, MainActivity.class));
-            finish();
         }
     }
 }

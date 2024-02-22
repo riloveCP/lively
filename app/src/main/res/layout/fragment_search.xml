@@ -34,6 +34,7 @@
                 android:layout_marginStart="10dp"
                 android:textColorHint="@color/white"
                 android:textSize="20sp"
+                android:inputType="textShortMessage"
                 android:hint="@string/search"/>
         </androidx.appcompat.widget.Toolbar>
 

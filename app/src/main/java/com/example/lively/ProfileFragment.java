@@ -16,7 +16,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,23 +46,17 @@ public class ProfileFragment extends Fragment {
         menu = view.findViewById(R.id.profileMenu);
         context = getContext();
 
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                //intent to land on login screen
-                Intent intent = new Intent(context, LogInScreen.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
+        logOut.setOnClickListener(view1 -> {
+            FirebaseAuth.getInstance().signOut();
+            //intent to land on login screen
+            Intent intent = new Intent(context, LogInScreen.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         });
 
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Menu selected", Toast.LENGTH_SHORT).show();
-                showDialog();
-            }
+        menu.setOnClickListener(v -> {
+            Toast.makeText(context, "Menu selected", Toast.LENGTH_SHORT).show();
+            showDialog();
         });
 
         return view;
@@ -81,44 +74,21 @@ public class ProfileFragment extends Fragment {
         LinearLayout darkModeLayout = dialog.findViewById(R.id.layoutDarkmode);
         LinearLayout logOutLayout = dialog.findViewById(R.id.layoutLogout);
 
-        settingsLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Setting Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
+        settingsLayout.setOnClickListener(v -> Toast.makeText(context, "Setting Clicked", Toast.LENGTH_SHORT).show());
 
-        savedLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Saved Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
+        savedLayout.setOnClickListener(v -> Toast.makeText(context, "Saved Clicked", Toast.LENGTH_SHORT).show());
 
-        yourActivityLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Your activity Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
+        yourActivityLayout.setOnClickListener(v -> Toast.makeText(context, "Your activity Clicked", Toast.LENGTH_SHORT).show());
 
-        darkModeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Dark mode Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
+        darkModeLayout.setOnClickListener(v -> Toast.makeText(context, "Dark mode Clicked", Toast.LENGTH_SHORT).show());
 
-        logOutLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Log out Clicked", Toast.LENGTH_SHORT).show();
-                FirebaseAuth.getInstance().signOut();
-                //intent to land on login screen
-                Intent intent = new Intent(context, LogInScreen.class);
-                startActivity(intent);
+        logOutLayout.setOnClickListener(v -> {
+            Toast.makeText(context, "Log out Clicked", Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+            //intent to land on login screen
+            Intent intent = new Intent(context, LogInScreen.class);
+            startActivity(intent);
 
-            }
         });
 
         dialog.show();

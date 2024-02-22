@@ -30,6 +30,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="18dp"
                 android:src="@drawable/round_menu_24" />
 
         </RelativeLayout>
@@ -40,10 +42,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="120dp"
-        android:layout_marginRight="120dp"
+        android:layout_marginLeft="140dp"
+        android:layout_marginRight="140dp"
         android:layout_marginBottom="83dp"
-        android:backgroundTint="#80c4a092"
+        android:background="@drawable/btn_bg"
         android:text="Log Out"
         android:textStyle="bold" />
 

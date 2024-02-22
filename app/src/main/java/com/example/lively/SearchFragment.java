@@ -81,7 +81,7 @@ public class SearchFragment extends Fragment {
                     mUsers.add(user);
                 }
 
-                userAdapter.notifyDataSetChanged();
+                userAdapter.notifyItemInserted(1);
             }
 
             @Override
@@ -104,7 +104,7 @@ public class SearchFragment extends Fragment {
                         mUsers.add(user);
                     }
 
-                    userAdapter.notifyDataSetChanged();
+                    userAdapter.notifyItemInserted(1);
                 }
             }
 
