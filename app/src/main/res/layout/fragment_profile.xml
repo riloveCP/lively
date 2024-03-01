@@ -152,6 +152,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:background="@color/white"
+                        android:minHeight="48dp"
                         android:text="Edit Profile"
                         android:textColor="@color/black"
                         android:textSize="10sp" />
@@ -208,7 +209,7 @@
                     android:id="@+id/savedPhotos"
                     style="?android:buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/baseline_save_alt_24" />
 

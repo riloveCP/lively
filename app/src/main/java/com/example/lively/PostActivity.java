@@ -39,7 +39,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PostActivity extends AppCompatActivity {
-    private static final String PERMISSION_READ_MEDIA = Manifest.permission.READ_MEDIA_IMAGES;
 
     Uri imageUri;
     String myUrl = null;
@@ -50,12 +49,14 @@ public class PostActivity extends AppCompatActivity {
     EditText description;
     private ActivityResultLauncher<String> mImage;
     private static final int PICK_IMAGE_REQUEST = 1;
-    public ProgressBar progressBar = findViewById(R.id.progressBar);
+    public ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+
+        progressBar = findViewById(R.id.progressBar);
 
         close = findViewById(R.id.close);
         imageAdded = findViewById(R.id.imageAdded);
@@ -68,9 +69,8 @@ public class PostActivity extends AppCompatActivity {
             finish();
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2) {
-            imageAdded.setOnClickListener(v -> pickImage());
-        }
+        imageAdded.setOnClickListener(v -> openFileChooser());
+
 
         post.setOnClickListener(v -> {
             if (imageUri != null) {
@@ -80,59 +80,6 @@ public class PostActivity extends AppCompatActivity {
             }
         });
 
-        openFileChooser();
-    }
-
-    private void requestRuntimePermission() {
-        if (ActivityCompat.checkSelfPermission(this, PERMISSION_READ_MEDIA)
-                == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, PERMISSION_READ_MEDIA)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Access Images")
-                    .setTitle("Permission Required")
-                    .setCancelable(false)
-                    .setPositiveButton("Ok", (dialog, which) -> {
-                        ActivityCompat.requestPermissions(PostActivity.this, new String[]{PERMISSION_READ_MEDIA}, PICK_IMAGE_REQUEST);
-                        dialog.dismiss();
-
-                    })
-                    .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()));
-            builder.show();
-
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{PERMISSION_READ_MEDIA}, PICK_IMAGE_REQUEST);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PICK_IMAGE_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-
-            } else if (!ActivityCompat.shouldShowRequestPermissionRationale(this, PERMISSION_READ_MEDIA)) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Allow from settings")
-                        .setTitle("Permission Required")
-                        .setCancelable(false)
-                        .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()))
-                        .setPositiveButton("Settings", (dialog, which) -> {
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package", getPackageName(), null);
-                            intent.setData(uri);
-                            startActivity(intent);
-
-                            dialog.dismiss();
-                        });
-                builder.show();
-
-            } else {
-                requestRuntimePermission();
-            }
-        }
     }
 
     private void openFileChooser() {
@@ -140,6 +87,7 @@ public class PostActivity extends AppCompatActivity {
                 new ActivityResultContracts.GetContent(),
                 o -> imageAdded.setImageURI(o)
         );
+        mImage.launch("image/*");  // This line launches the activity for result
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -150,13 +98,6 @@ public class PostActivity extends AppCompatActivity {
             imageUri = data.getData();
             imageAdded.setImageURI(imageUri);
         }
-    }
-
-    @RequiresExtension(extension = Build.VERSION_CODES.R, version = 2)
-    private void pickImage() {
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
-        mImage.launch(String.valueOf(intent));
-        requestRuntimePermission();
     }
 
 
