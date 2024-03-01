@@ -1,13 +1,12 @@
 package com.example.lively;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import android.widget.FrameLayout;
 
@@ -24,40 +23,48 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         loadFragment(new HomeFragment(), true);
 
+        Bundle intent = getIntent().getExtras();
+        if(intent != null) {
+            String publisher = intent.getString("publisherid");
+
+            SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+            editor.putString("profileid", publisher);
+            editor.apply();
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,
+                    new ProfileFragment()).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,
+                    new HomeFragment()).commit();
+        }
+
         frameLayout = findViewById(R.id.frameLayout);
         bottomNavigationView = findViewById(R.id.bottomNavBar);
 
-        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnItemSelectedListener((BottomNavigationView.OnNavigationItemSelectedListener) item -> {
+            int itemId = item.getItemId();
 
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                //loadFragment(new HomeFragment(), true);
+            if (itemId == R.id.navHome) {
+                loadFragment(new HomeFragment(), false);
 
-                int itemId = item.getItemId();
+            } else if(itemId == R.id.navSearch) {
+                loadFragment(new SearchFragment(), false);
 
-                if (itemId == R.id.navHome) {
-                    loadFragment(new HomeFragment(), false);
+            } else if(itemId == R.id.navNotifications) {
+                loadFragment(new NotificationsFragment(), false);
 
-                } else if(itemId == R.id.navSearch) {
-                    loadFragment(new SearchFragment(), false);
+            } else if(itemId == R.id.navProfile) {
+                loadFragment(new ProfileFragment(), false);
 
-                } else if(itemId == R.id.navNotifications) {
-                    loadFragment(new NotificationsFragment(), false);
+            } else if(itemId == R.id.navUpload) {
+                Intent intent1 = new Intent(getApplicationContext(), PostActivity.class);
+                startActivity(intent1);
 
-                } else if(itemId == R.id.navProfile) {
-                    loadFragment(new ProfileFragment(), false);
+            }else{
+                loadFragment(new HomeFragment(), false);
 
-                } else if(itemId == R.id.navUpload) {
-                    Intent intent = new Intent(getApplicationContext(), PostActivity.class);
-                    startActivity(intent);
-
-                }else{
-                    loadFragment(new HomeFragment(), false);
-
-                }
-                //loadFragment(new HomeFragment(), true);
-                return true;
             }
+            return true;
         });
     }
 

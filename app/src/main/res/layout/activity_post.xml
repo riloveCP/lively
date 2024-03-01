@@ -6,6 +6,15 @@
     android:orientation="vertical"
     tools:context=".PostActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/postBar"
         android:layout_width="match_parent"
@@ -55,7 +64,7 @@
             android:layout_height="200dp"
             android:scaleType="centerInside"
             android:layout_gravity="center"
-
+            android:src="@drawable/pineapple"
             android:id="@+id/imageAdded"/>
         
         <EditText
