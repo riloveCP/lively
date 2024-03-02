@@ -58,6 +58,11 @@ public class PostActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
 
+        mImage = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                o -> imageAdded.setImageURI(o)
+        );
+
         close = findViewById(R.id.close);
         imageAdded = findViewById(R.id.imageAdded);
         post = findViewById(R.id.post);
@@ -83,11 +88,7 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void openFileChooser() {
-        mImage = registerForActivityResult(
-                new ActivityResultContracts.GetContent(),
-                o -> imageAdded.setImageURI(o)
-        );
-        mImage.launch("image/*");  // This line launches the activity for result
+        mImage.launch("image/*");
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
