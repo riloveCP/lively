@@ -47,7 +47,6 @@ public class HomeFragment extends Fragment {
         if (toolbar != null) {
             ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         }
-        //((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
         message = view.findViewById(R.id.message);
         message.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +84,6 @@ public class HomeFragment extends Fragment {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Follow")
-                //.child(FirebaseDatabase.getInstance().getReference().)
                 .child(userId)
                 .child("following");
 
@@ -117,6 +115,7 @@ public class HomeFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Post post = dataSnapshot.getValue(Post.class);
                     for (String id : followingList) {
+                        assert post != null;
                         if (post.getPublisher().equals(id)) {
                             postList.add(post);
                         }

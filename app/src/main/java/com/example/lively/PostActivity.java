@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,7 +41,7 @@ import java.util.UUID;
 
 public class PostActivity extends AppCompatActivity {
 
-    Uri imageUri;
+    Uri imageUri = null;
     String myUrl = null;
     StorageTask uploadTask;
     StorageReference storageReference;
@@ -60,7 +61,11 @@ public class PostActivity extends AppCompatActivity {
 
         mImage = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
-                o -> imageAdded.setImageURI(o)
+                o -> {
+                    imageAdded.setImageURI(o);
+                    imageUri = o;
+                }
+
         );
 
         close = findViewById(R.id.close);
@@ -98,6 +103,7 @@ public class PostActivity extends AppCompatActivity {
                 && data != null && data.getData() != null) {
             imageUri = data.getData();
             imageAdded.setImageURI(imageUri);
+            Log.d("PostActivity", "imageUri: " + imageUri);
         }
     }
 

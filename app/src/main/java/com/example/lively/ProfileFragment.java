@@ -1,6 +1,7 @@
 package com.example.lively;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -39,6 +40,10 @@ public class ProfileFragment extends Fragment {
     ImageView imageProfile, options;
     TextView posts, followers, following, fullname, bio, username;
     Button editProfile;
+    private List<String> mySaves;
+    RecyclerView recyclerViewSaves;
+    MyPhotoAdapter myPhotoAdapterSaves;
+    List<Post> postListSaves;
     RecyclerView recyclerView;
     MyPhotoAdapter myPhotoAdapter;
     List<Post> postList;
@@ -68,17 +73,28 @@ public class ProfileFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-
         LinearLayoutManager linearLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(linearLayoutManager);
         postList = new ArrayList<>();
         myPhotoAdapter = new MyPhotoAdapter(getContext(), postList);
         recyclerView.setAdapter(myPhotoAdapter);
 
+        recyclerViewSaves = view.findViewById(R.id.recyclerViewSaved);
+        recyclerViewSaves.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManagerSaves = new GridLayoutManager(getContext(), 3);
+        recyclerViewSaves.setLayoutManager(linearLayoutManagerSaves);
+        postListSaves = new ArrayList<>();
+        myPhotoAdapterSaves = new MyPhotoAdapter(getContext(), postListSaves);
+        recyclerViewSaves.setAdapter(myPhotoAdapterSaves);
+
+        recyclerView.setVisibility(View.VISIBLE);
+        recyclerViewSaves.setVisibility(View.GONE);
+
         userInfo();
         getFollowers();
         getNrPosts();
         myPhotos();
+        mysaves();
 
         if (profileId.equals(firebaseUser.getUid())) {
             editProfile.setText("Edit Profile");
@@ -94,7 +110,7 @@ public class ProfileFragment extends Fragment {
                 String btn = editProfile.getText().toString();
                 
                 if (btn.equals("Edit Profile")) {
-                    //go to edit profile
+                    startActivity(new Intent(getContext(), EditProfileActivity.class));
                 } else if (btn.equals("follow")) {
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
                             .child("following").child(profileId).setValue(true);
@@ -106,6 +122,22 @@ public class ProfileFragment extends Fragment {
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(profileId)
                             .child("followers").child(firebaseUser.getUid()).removeValue();
                 }
+            }
+        });
+
+        myPhotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerViewSaves.setVisibility(View.GONE);
+            }
+        });
+
+        savedPhotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setVisibility(View.GONE);
+                recyclerViewSaves.setVisibility(View.VISIBLE);
             }
         });
 
@@ -123,10 +155,12 @@ public class ProfileFragment extends Fragment {
 
                 User user = snapshot.getValue(User.class);
 
-                Glide.with(getContext()).load(user.getImageurl()).into(imageProfile);
-                username.setText(user.getUsername());
-                fullname.setText(user.getFullname());
-                bio.setText(user.getBio());
+                if (user != null) {
+                    Glide.with(getContext()).load(user.getImageurl()).into(imageProfile);
+                    username.setText(user.getUsername());
+                    fullname.setText(user.getFullname());
+                    bio.setText(user.getBio());
+                }
             }
 
             @Override
@@ -220,12 +254,59 @@ public class ProfileFragment extends Fragment {
                 postList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Post post = dataSnapshot.getValue(Post.class);
+                    assert post != null;
                     if (post.getPublisher().equals(profileId)) {
                         postList.add(post);
                     }
                 }
                 Collections.reverse(postList);
                 myPhotoAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void mysaves() {
+        mySaves = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Saves")
+                .child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    mySaves.add(snapshot.getKey());
+                }
+
+                readSaves();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void readSaves() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postListSaves.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Post post = snapshot.getValue(Post.class);
+
+                    for (String id : mySaves) {
+                        if (post.getPostId().equals(id)) {
+                            postListSaves.add(post);
+                        }
+                    }
+                }
+                myPhotoAdapterSaves.notifyDataSetChanged();
             }
 
             @Override

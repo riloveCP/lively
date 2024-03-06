@@ -1,7 +1,8 @@
 package com.example.lively;
 
+import android.content.Context;
 import android.os.Bundle;
-
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 
 import com.example.lively.Adapter.UserAdapter;
 import com.example.lively.Model.User;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,10 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment {
+    private static final String TAG = "SearchFragment"; // Tag for logs
     private UserAdapter userAdapter;
     private List<User> mUsers;
-
     EditText searchBar;
+    Context context;
 
 
     @Override
@@ -46,6 +49,10 @@ public class SearchFragment extends Fragment {
         mUsers = new ArrayList<>();
         userAdapter = new UserAdapter(getContext(), mUsers);
         recyclerView.setAdapter(userAdapter);
+        context = getContext();
+
+        assert context != null;
+        FirebaseApp.initializeApp(context);
 
         readUsers();
         searchBar.addTextChangedListener(new TextWatcher() {
@@ -69,6 +76,8 @@ public class SearchFragment extends Fragment {
     }
 
     private void searchUsers(String s){
+        Log.d(TAG, "Search triggered: User entered '" + s + "'"); // Debug log
+
         Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("username")
                 .startAt(s)
                 .endAt(s+"\uf8ff");
@@ -81,12 +90,13 @@ public class SearchFragment extends Fragment {
                     mUsers.add(user);
                 }
 
-                userAdapter.notifyItemInserted(1);
+                userAdapter.notifyDataSetChanged();
+                Log.i(TAG, "Search results updated: " + mUsers.size() + " users found"); // Info log
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e(TAG, "Error retrieving data", error.toException()); // Error log with error object
             }
         });
 
@@ -104,7 +114,7 @@ public class SearchFragment extends Fragment {
                         mUsers.add(user);
                     }
 
-                    userAdapter.notifyItemInserted(1);
+                    userAdapter.notifyDataSetChanged();
                 }
             }
 

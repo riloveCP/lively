@@ -57,7 +57,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/saved" />
+                android:src="@drawable/round_bookmark_border_24" />
 
         </RelativeLayout>
 

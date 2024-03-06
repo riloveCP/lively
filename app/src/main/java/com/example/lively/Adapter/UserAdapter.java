@@ -2,6 +2,7 @@ package com.example.lively.Adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.btnFollow.setVisibility(View.VISIBLE);
         holder.username.setText(user.getUsername());
         holder.fullname.setText(user.getFullname());
-        Glide.with(mContext).load(user.getImageurl()).into(holder.imageProfile);
+        Log.d("TAG", "Image URL: " + user.getImageurl());
+        if (!user.getImageurl().isEmpty()) {
+            Glide.with(mContext).load(user.getImageurl()).into(holder.imageProfile);
+        } else {
+            Glide.with(mContext).load(R.drawable.round_person_24).into(holder.imageProfile);
+        }
+        //Glide.with(mContext).load(user.getImageurl()).into(holder.imageProfile);
         isFollowing(user.getId(), holder.btnFollow);
 
         if (user.getId().equals(firebaseUser.getUid())) {
@@ -72,7 +79,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.btnFollow.getTag().toString().equals("followed")) {
+                if (holder.btnFollow != null && holder.btnFollow.getTag() != null && holder.btnFollow.getTag().toString().equals("follow")) {
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
                             .child("following").child(user.getId()).setValue(true);
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
@@ -112,24 +119,28 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     private void isFollowing(String userid, Button btn) {
-        DatabaseReference references = FirebaseDatabase.getInstance().getReference()
-                .child("Follow").child(firebaseUser.getUid()).child("following");
-        references.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child(userid).exists()) {
-                    btn.setText("@String/following");
-                } else {
-                    btn.setText("@String/follow");
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentFirebaseUser != null) {
+            String currentUserId = currentFirebaseUser.getUid();
+            DatabaseReference references = FirebaseDatabase.getInstance().getReference()
+                    .child("Follow").child(currentUserId).child("following");
+            references.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.child(userid).exists()) {
+                        btn.setText("following");
+                    } else {
+                        btn.setText("follow");
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-
+                }
+            });
+        }
     }
+
 }
     

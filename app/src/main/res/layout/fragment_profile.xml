@@ -55,6 +55,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <LinearLayout
@@ -112,7 +113,7 @@
                                 android:id="@+id/followers"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:gravity="center"
+                                android:gravity="center_vertical"
                                 android:textColor="@color/black"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -150,12 +151,10 @@
                         android:id="@+id/editProfile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/white"
-                        android:minHeight="48dp"
+                        android:backgroundTint="@color/white"
                         android:text="Edit Profile"
-                        android:textColor="@color/black"
-                        android:textSize="10sp" />
+                        android:textColor="@color/dark_brown"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -200,7 +199,7 @@
                 <ImageButton
                     android:id="@+id/myPhotos"
                     style="?android:buttonBarButtonStyle"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/baseline_apps_24" />
@@ -208,10 +207,11 @@
                 <ImageButton
                     android:id="@+id/savedPhotos"
                     style="?android:buttonBarButtonStyle"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/baseline_save_alt_24" />
+                    android:src="@drawable/baseline_bookmark_24"
+                    android:visibility="visible" />
 
             </LinearLayout>
 
