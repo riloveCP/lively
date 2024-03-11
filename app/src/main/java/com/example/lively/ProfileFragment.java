@@ -1,8 +1,11 @@
 package com.example.lively;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,13 +14,17 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.lively.Adapter.MyPhotoAdapter;
@@ -33,11 +40,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class ProfileFragment extends Fragment {
-    ImageView imageProfile, options;
+    ImageView imageProfile, options, profileMenu;
     TextView posts, followers, following, fullname, bio, username;
     Button editProfile;
     private List<String> mySaves;
@@ -70,6 +78,7 @@ public class ProfileFragment extends Fragment {
         editProfile = view.findViewById(R.id.editProfile);
         myPhotos = view.findViewById(R.id.myPhotos);
         savedPhotos = view.findViewById(R.id.savedPhotos);
+        profileMenu = view.findViewById(R.id.profileMenu);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -103,6 +112,13 @@ public class ProfileFragment extends Fragment {
             savedPhotos.setVisibility(View.GONE);
         }
 
+        profileMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
 
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +132,8 @@ public class ProfileFragment extends Fragment {
                             .child("following").child(profileId).setValue(true);
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(profileId)
                             .child("followers").child(firebaseUser.getUid()).setValue(true);
+
+                    addNotifications();
                 } else if (btn.equals("following")) {
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
                             .child("following").child(profileId).removeValue();
@@ -141,7 +159,80 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        followers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), FollowersActivity.class);
+                intent.putExtra("id", profileId);
+                intent.putExtra("title", "followers");
+                startActivity(intent);
+
+            }
+        });
+
+        following.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), FollowersActivity.class);
+                intent.putExtra("id", profileId);
+                intent.putExtra("title", "following");
+                startActivity(intent);
+
+            }
+        });
+
         return view;
+    }
+
+    private void showDialog() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottom_sheet_layout);
+
+        LinearLayout settingsLayout = dialog.findViewById(R.id.layoutSettings);
+        LinearLayout editLayout = dialog.findViewById(R.id.layoutEdit);
+        LinearLayout logoutLayout = dialog.findViewById(R.id.layoutLogout);
+
+        settingsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Settings selected", Toast.LENGTH_SHORT).show();
+            }
+        });
+        editLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        logoutLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getContext(), LogInScreen.class));
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    private void addNotifications() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(profileId);
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("userid", firebaseUser.getUid());
+        hashMap.put("text", "started following you");
+        hashMap.put("postid", "");
+        hashMap.put("ispost", false);
+
+        reference.push().setValue(hashMap);
+
     }
 
     private void userInfo() {

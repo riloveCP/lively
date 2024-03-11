@@ -10,7 +10,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -36,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 
@@ -46,7 +46,6 @@ public class EditProfileActivity extends AppCompatActivity {
     EditText fullName, username, bio;
     FirebaseUser firebaseUser;
     private Uri imageUri;
-    private StorageTask uploadTask;
     StorageReference storageReference;
     private ActivityResultLauncher<String> mImage;
 
@@ -121,6 +120,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 updateProfile(fullName.getText().toString(),
                         username.getText().toString(),
                         bio.getText().toString());
+
+                if(imageUri != null) {
+                    uploadImage();
+                }
             }
         });
 
@@ -152,8 +155,9 @@ public class EditProfileActivity extends AppCompatActivity {
         if (imageUri != null) {
             final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
             +"."+ getFileExtension(imageUri));
+            StorageTask uploadTask = fileReference.putFile(imageUri);
 
-            uploadTask = fileReference.putFile(imageUri);
+            //uploadTask = fileReference.putFile(imageUri);
             uploadTask.continueWithTask(new Continuation() {
                 @Override
                 public Object then(@NonNull Task task) throws Exception {
@@ -172,7 +176,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
                         HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("imageUrl", ""+myUrl);
+                        hashMap.put("imageurl", ""+myUrl);
                         
                         reference.updateChildren(hashMap);
                         progressBar.setVisibility(View.GONE);
@@ -191,18 +195,18 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            imageProfile.setImageURI(imageUri);
-            Log.d("PostActivity", "imageUri: " + imageUri);
-        } else {
-            Toast.makeText(this, "Something gone wrong", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+//                && data != null && data.getData() != null) {
+//            imageUri = data.getData();
+//            imageProfile.setImageURI(imageUri);
+//            Log.d("PostActivity", "imageUri: " + imageUri);
+//        } else {
+//            Toast.makeText(this, "Something gone wrong", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     private void openFileChooser() {
         mImage.launch("image/*");

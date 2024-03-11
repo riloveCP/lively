@@ -84,7 +84,7 @@ public class SignUpPage extends AppCompatActivity {
                             hashMap.put("username", username.toLowerCase());
                             hashMap.put("fullname", fullname);
                             hashMap.put("bio", "");
-                            hashMap.put("imageurl", "gs://lively-fe328.appspot.com/pomergranate.jpg");
+                            hashMap.put("imageurl", "https://firebasestorage.googleapis.com/v0/b/lively-fe328.appspot.com/o/pomergranate.jpg?alt=media&token=97256b11-0593-4735-90df-52e6e33ee957");
 
                             reference.setValue(hashMap).addOnCompleteListener(task1 -> {
                                 if(task1.isSuccessful()){

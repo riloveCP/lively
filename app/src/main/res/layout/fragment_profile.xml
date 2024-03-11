@@ -10,7 +10,7 @@
         android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="57dp"
-        android:background="@drawable/bg1">
+        android:background="@color/white">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/profileToolbar"
@@ -154,7 +154,7 @@
                         android:backgroundTint="@color/white"
                         android:text="Edit Profile"
                         android:textColor="@color/dark_brown"
-                        android:textSize="16sp" />
+                        android:textSize="17sp" />
 
                 </LinearLayout>
 
