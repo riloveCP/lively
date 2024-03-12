@@ -55,7 +55,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         Post post = mPost.get(position);
 
-        Glide.with(mContext).load(post.getPostImage()).placeholder(R.drawable.lemon).into(holder.postImage);
+        assert post != null;
+        Glide.with(mContext).load(post.getPostimage()).placeholder(R.drawable.lemon).into(holder.postImage);
 
         if (post.getDescription().equals("")) {
             holder.description.setVisibility(View.GONE);
@@ -65,11 +66,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
         publisherInfo(holder.profileImage, holder.username, holder.publisher, post.getPublisher());
-        if(post.getPostId()!=null){
-            isLiked(post.getPostId(), holder.like);
-            nrLikes(holder.likes, post.getPostId());
-            getComments(post.getPostId(), holder.comments);
-            isSaved(post.getPostId(), holder.save);
+        if(post.getPostid()!=null){
+            isLiked(post.getPostid(), holder.like);
+            nrLikes(holder.likes, post.getPostid());
+            getComments(post.getPostid(), holder.comments);
+            isSaved(post.getPostid(), holder.save);
         }
 
 
@@ -109,7 +110,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PEEFS", Context.MODE_PRIVATE).edit();
-                editor.putString("postid", post.getPostId());
+                editor.putString("postid", post.getPostid());
 
                 ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new PostDetailFragment()).commit();
 
@@ -119,34 +120,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.save.setOnClickListener(v -> {
             if (holder.like.getTag() != null && holder.like.getTag().equals("save")) {
                 FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid())
-                        .child(post.getPostId()).setValue(true);
+                        .child(post.getPostid()).setValue(true);
             } else {
                 FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid())
-                        .child(post.getPostId()).removeValue();
+                        .child(post.getPostid()).removeValue();
             }
         });
 
         holder.like.setOnClickListener(v -> {
             if (holder.like.getTag() != null   && holder.like.getTag().equals("like")) {
-                FirebaseDatabase.getInstance().getReference().child("Likes").child(post.getPostId())
+                FirebaseDatabase.getInstance().getReference().child("Likes").child(post.getPostid())
                         .child(firebaseUser.getUid()).setValue(true);
-                addNotifications(post.getPublisher(), post.getPostId());
+                addNotifications(post.getPublisher(), post.getPostid());
             } else {
-                FirebaseDatabase.getInstance().getReference().child("Likes").child(post.getPostId())
+                FirebaseDatabase.getInstance().getReference().child("Likes").child(post.getPostid())
                         .child(firebaseUser.getUid()).removeValue();
             }
         });
 
         holder.comment.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, CommentActivity.class);
-            intent.putExtra("postid", post.getPostId());
+            intent.putExtra("postid", post.getPostid());
             intent.putExtra("publisherid", post.getPublisher());
             mContext.startActivity(intent);
         });
 
         holder.comments.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, CommentActivity.class);
-            intent.putExtra("postid", post.getPostId());
+            intent.putExtra("postid", post.getPostid());
             intent.putExtra("publisherid", post.getPublisher());
             mContext.startActivity(intent);
         });
@@ -155,7 +156,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, FollowersActivity.class);
-                intent.putExtra("id", post.getPostId());
+                intent.putExtra("id", post.getPostid());
                 intent.putExtra("title", "likes");
                 mContext.startActivity(intent);
             }

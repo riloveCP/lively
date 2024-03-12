@@ -45,7 +45,7 @@ import java.util.List;
 
 
 public class ProfileFragment extends Fragment {
-    ImageView imageProfile, options, profileMenu;
+    ImageView imageProfile, profileMenu;
     TextView posts, followers, following, fullname, bio, username;
     Button editProfile;
     private List<String> mySaves;
@@ -68,7 +68,6 @@ public class ProfileFragment extends Fragment {
         profileId = prefs.getString("profileid","none");
 
         imageProfile = view.findViewById(R.id.imageProfile);
-        options = view.findViewById(R.id.profileMenu);
         posts = view.findViewById(R.id.posts);
         following = view.findViewById(R.id.following);
         followers = view.findViewById(R.id.followers);
@@ -392,7 +391,7 @@ public class ProfileFragment extends Fragment {
                     Post post = snapshot.getValue(Post.class);
 
                     for (String id : mySaves) {
-                        if (post.getPostId().equals(id)) {
+                        if (post.getPostid().equals(id)) {
                             postListSaves.add(post);
                         }
                     }

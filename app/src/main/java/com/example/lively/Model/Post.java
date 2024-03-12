@@ -1,14 +1,14 @@
 package com.example.lively.Model;
 
 public class Post {
-    private  String postId;
-    private  String postImage;
+    private  String postid;
+    private  String postimage;
     private  String description;
     private  String publisher;
 
-    public Post(String postId, String postImage, String description, String publisher) {
-        this.postId = postId;
-        this.postImage = postImage;
+    public Post(String postid, String postimage, String description, String publisher) {
+        this.postid = postid;
+        this.postimage = postimage;
         this.description = description;
         this.publisher = publisher;
     }
@@ -17,20 +17,20 @@ public class Post {
 
     }
 
-    public String getPostId() {
-        return postId;
+    public String getPostid() {
+        return postid;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setPostid(String postid) {
+        this.postid = postid;
     }
 
-    public String getPostImage() {
-        return postImage;
+    public String getPostimage() {
+        return postimage;
     }
 
-    public void setPostImage(String postImage) {
-        this.postImage = postImage;
+    public void setPostimage(String postimage) {
+        this.postimage = postimage;
     }
 
     public String getDescription() {
