@@ -47,7 +47,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notification notification = mNotification.get(position);
         holder.text.setText(notification.getText());
-        getUserInfo(holder.imageProfile, holder.username, notification.getUserID());
+        getUserInfo(holder.imageProfile, holder.username, notification.getUserid());
 
         if (notification.isIspost()) {
             holder.postImage.setVisibility(View.VISIBLE);
@@ -61,8 +61,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
                 if(notification.isIspost()) {
-                    SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
                     editor.putString("postid", notification.getPostid());
                     editor.apply();
 
@@ -70,8 +70,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             new PostDetailFragment()).commit();
 
                 } else {
-                    SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
-                    editor.putString("postid", notification.getUserID());
+                    editor.putString("postid", notification.getUserid());
                     editor.apply();
 
                     ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,
@@ -110,6 +109,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
+                    assert user != null;
                     Glide.with(mContext).load(user.getImageurl()).into(imageView);
                     username.setText(user.getUsername());
                 }

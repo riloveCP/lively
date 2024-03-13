@@ -1,13 +1,13 @@
 package com.example.lively.Model;
 
 public class Notification {
-    private String userID;
+    private String userid;
     private String text;
     private String postid;
     private boolean ispost;
 
-    public Notification(String userID, String text, String postid, boolean ispost) {
-        this.userID = userID;
+    public Notification(String userid, String text, String postid, boolean ispost) {
+        this.userid = userid;
         this.text = text;
         this.postid = postid;
         this.ispost = ispost;
@@ -16,12 +16,12 @@ public class Notification {
     public Notification() {
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
     public String getText() {
