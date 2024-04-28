@@ -152,7 +152,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mContext.startActivity(intent);
         });
 
-        holder.like.setOnClickListener(new View.OnClickListener() {
+        holder.likes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, FollowersActivity.class);
@@ -287,6 +287,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private void isSaved(final String postid, ImageView imageView) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        assert firebaseUser != null;
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Saves")
                 .child(firebaseUser.getUid());
 

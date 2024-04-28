@@ -58,7 +58,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.btnFollow.setVisibility(View.VISIBLE);
         holder.username.setText(user.getUsername());
         holder.fullname.setText(user.getFullname());
-        Log.d("TAG", "Image URL: " + user.getImageurl());
+        //holder.lineView.setVisibility(position % 2 == 0 ? View.GONE : View.VISIBLE);
         if (!user.getImageurl().isEmpty()) {
             Glide.with(mContext).load(user.getImageurl()).into(holder.imageProfile);
         } else {

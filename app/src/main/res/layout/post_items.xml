@@ -66,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="10 likes"
+            android:text="0 likes"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
